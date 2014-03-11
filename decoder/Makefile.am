@@ -18,7 +18,7 @@ trule_test_LDADD = $(BOOST_UNIT_TEST_FRAMEWORK_LDFLAGS) $(BOOST_UNIT_TEST_FRAMEW
 
 cdec_SOURCES = cdec.cc
 cdec_LDFLAGS= -rdynamic
-cdec_LDADD = libcdec.a ../mteval/libmteval.a ../utils/libutils.a ../klm/search/libksearch.a ../klm/lm/libklm.a ../klm/util/libklm_util.a ../klm/util/double-conversion/libklm_util_double.a
+cdec_LDADD = libcdec.a libplre.a ../mteval/libmteval.a ../utils/libutils.a ../klm/search/libksearch.a ../klm/lm/libklm.a ../klm/util/libklm_util.a ../klm/util/double-conversion/libklm_util_double.a
 
 AM_CPPFLAGS = -DTEST_DATA=\"$(top_srcdir)/decoder/test_data\" -DBOOST_TEST_DYN_LINK -W -Wno-sign-compare -I$(top_srcdir) -I$(top_srcdir)/mteval -I$(top_srcdir)/utils -I$(top_srcdir)/klm
 
@@ -50,6 +50,7 @@ libcdec_a_SOURCES = \
   ff_klm.h \
   ff_lm.h \
   ff_ngrams.h \
+  ff_plre.h \
   ff_parse_match.h \
   ff_register.h \
   ff_rules.h \
@@ -114,6 +115,7 @@ libcdec_a_SOURCES = \
   ff_klm.cc \
   ff_lm.cc \
   ff_ngrams.cc \
+  ff_plre.cc \
   ff_parse_match.cc \
   ff_rules.cc \
   ff_ruleshape.cc \

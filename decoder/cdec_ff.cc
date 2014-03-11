@@ -7,6 +7,7 @@
 #include "ff_lm.h"
 #include "ff_klm.h"
 #include "ff_ngrams.h"
+#include "ff_plre.h"
 #include "ff_csplit.h"
 #include "ff_wordalign.h"
 #include "ff_tagger.h"
@@ -43,6 +44,7 @@ void register_feature_functions() {
   //TODO: use for all features the new Register which requires static FF::usage(false,false) give name
   ff_registry.Register("SpanFeatures", new FFFactory<SpanFeatures>());
   ff_registry.Register("NgramFeatures", new FFFactory<NgramDetector>());
+  ff_registry.Register("PLREFeatures", new FFFactory<PLRENgramDetector>()); 
   ff_registry.Register("RuleContextFeatures", new FFFactory<RuleContextFeatures>());
   ff_registry.Register("RuleIdentityFeatures", new FFFactory<RuleIdentityFeatures>());
   ff_registry.Register("RuleWordAlignmentFeatures", new FFFactory<RuleWordAlignmentFeatures>());

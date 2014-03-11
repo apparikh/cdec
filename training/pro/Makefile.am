@@ -3,7 +3,7 @@ bin_PROGRAMS = \
   mr_pro_reduce
 
 mr_pro_map_SOURCES = mr_pro_map.cc
-mr_pro_map_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../mteval/libmteval.a ../../utils/libutils.a
+mr_pro_map_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../decoder/libplre.a ../../mteval/libmteval.a ../../utils/libutils.a
 
 mr_pro_reduce_SOURCES = mr_pro_reduce.cc
 mr_pro_reduce_LDADD = ../../training/liblbfgs/liblbfgs.a ../../utils/libutils.a

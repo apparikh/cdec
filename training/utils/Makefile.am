@@ -37,7 +37,7 @@ optimize_test_SOURCES = optimize_test.cc
 optimize_test_LDADD = libtraining_utils.a ../../utils/libutils.a
 
 grammar_convert_SOURCES = grammar_convert.cc
-grammar_convert_LDADD = ../../decoder/libcdec.a ../../mteval/libmteval.a ../../utils/libutils.a
+grammar_convert_LDADD = ../../decoder/libcdec.a ../../decoder/libplre.a ../../mteval/libmteval.a ../../utils/libutils.a
 
 lbfgs_test_SOURCES = lbfgs_test.cc
 lbfgs_test_LDADD = ../../utils/libutils.a

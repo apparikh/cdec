@@ -1,7 +1,7 @@
 bin_PROGRAMS = rampion_cccp
 
 rampion_cccp_SOURCES = rampion_cccp.cc
-rampion_cccp_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../mteval/libmteval.a ../../utils/libutils.a
+rampion_cccp_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../decoder/libplre.a ../../mteval/libmteval.a ../../utils/libutils.a
 
 EXTRA_DIST = rampion.pl rampion_generate_input.pl
 

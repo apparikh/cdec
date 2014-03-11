@@ -1,7 +1,7 @@
 bin_PROGRAMS = minrisk_optimize
 
 minrisk_optimize_SOURCES = minrisk_optimize.cc
-minrisk_optimize_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../mteval/libmteval.a ../../utils/libutils.a ../../training/liblbfgs/liblbfgs.a
+minrisk_optimize_LDADD = ../../training/utils/libtraining_utils.a ../../decoder/libcdec.a ../../decoder/libplre.a ../../mteval/libmteval.a ../../utils/libutils.a ../../training/liblbfgs/liblbfgs.a
 
 EXTRA_DIST = minrisk.pl minrisk_generate_input.pl
 
