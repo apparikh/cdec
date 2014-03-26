@@ -257,6 +257,7 @@ class PLRENgramDetectorImpl {
     while(curword) {
       buf[n] = curword;
       int& fid = ft->fids[curword];
+      vector<string> words; 
       ++n;
       if (!fid) {
         ostringstream os;
@@ -267,14 +268,27 @@ class PLRENgramDetectorImpl {
           const string& tok = TD::Convert(buf[i]);
 	  os << Escape(tok);
         }
-        fid = FD::Convert(os.str());
-	cout << "FireFeature Test" << endl; 
-	cout << os << endl; 
+        fid = FD::Convert(os.str());	
+	string ngram = os.str(); 
+	ngram.erase(0,2); //erase first two characters
+	boost::split(words, ngram, boost::is_any_of("_"));
       }
-      //compute logprob here 
       double logprob = 0; 
-      
+      if (words.size() == order_){ //only score if it's a complete n-gram
+	if (words.size() == 2)
+	  logprob = plre_ar->GetCondProb(words[1], words[0]); 
+	else if (words.size() == 3)
+	  logprob = plre_ar->GetCondProb(words[2], words[1], words[0]); 
+	else if (words.size() == 4){
+	  logprob = plre_ar->GetCondProb(words[3], words[2], words[1], words[0]); 
+	  cout << "Ngram: " << "'" << words[0] << " " << words[1] << " " << words[2] << " " << words[3] << "'" << endl; 
+	  cout << "Score: " << logprob << endl; 
+	}
+	else
+	  cerr << "Only orders 2, 3, and 4 allowed" << endl; 
+      }     
       feats->set_value(FD::Convert("PLRE"), logprob); 
+      words.clear(); 
       ft = &ft->levels[curword];
       --ci;
       if (ci < 0) break;
@@ -459,11 +473,12 @@ class PLRENgramDetectorImpl {
     filename_ = filename; 
 
     //read in LM using PLRE interface
+    cout << "Reading in PLRE LM " << endl; 
     ifstream ifs(filename_.c_str());
     boost::archive::text_iarchive ari(ifs);
-
+    
     ari & moments_ar & kn_ar & plre_ar;
-    cout << "Read in PLRE LM" << endl; 
+    cout << "Finished reading in PLRE LM" << endl; 
 
     // special handling of beginning / ending sentence markers
     dummy_state_ = new char[state_size_];
