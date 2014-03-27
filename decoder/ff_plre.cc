@@ -257,7 +257,7 @@ class PLRENgramDetectorImpl {
     while(curword) {
       buf[n] = curword;
       int& fid = ft->fids[curword];
-      vector<string> words; 
+      vector<string> words; //used to store the n-gram
       ++n;
       if (!fid) {
         ostringstream os;
@@ -267,28 +267,30 @@ class PLRENgramDetectorImpl {
           os << (i != n-1 ? target_separator_ : "");
           const string& tok = TD::Convert(buf[i]);
 	  os << Escape(tok);
-        }
+        } //at this stage, generated the n-gram in the format T:how_are_you
         fid = FD::Convert(os.str());	
 	string ngram = os.str(); 
-	ngram.erase(0,2); //erase first two characters
-	boost::split(words, ngram, boost::is_any_of("_"));
+	ngram.erase(0,2); //erase first two characters, e.g, remove 'T:' from a trigram 
+	boost::split(words, ngram, boost::is_any_of("_")); //splits and puts into words vector
       }
-      double logprob = 0; 
+      double prob_ngram = 0; 
       if (words.size() == order_){ //only score if it's a complete n-gram
-	if (words.size() == 2)
-	  logprob = plre_ar->GetCondProb(words[1], words[0]); 
-	else if (words.size() == 3)
-	  logprob = plre_ar->GetCondProb(words[2], words[1], words[0]); 
+	//below code can probably be done more elegantly, but as of now just supports order 2, 3, and 4 LMs
+	if (words.size() == 2) //bigram model
+	  prob_ngram = plre_ar->GetCondProb(words[1], words[0]); 
+	else if (words.size() == 3) //trigram model
+	  prob_ngram = plre_ar->GetCondProb(words[2], words[1], words[0]); 
 	else if (words.size() == 4){
-	  logprob = plre_ar->GetCondProb(words[3], words[2], words[1], words[0]); 
-	  cout << "Ngram: " << "'" << words[0] << " " << words[1] << " " << words[2] << " " << words[3] << "'" << endl; 
-	  cout << "Score: " << logprob << endl; 
+	  prob_ngram = plre_ar->GetCondProb(words[3], words[2], words[1], words[0]);
+	  //cout << "Ngram: " << "'" << words[0] << " " << words[1] << " " << words[2] << " " << words[3] << "'" << endl; 
+	  //cout << "Score: " << log(prob_ngram) << endl; 	  
 	}
 	else
-	  cerr << "Only orders 2, 3, and 4 allowed" << endl; 
-      }     
-      feats->set_value(FD::Convert("PLRE"), logprob); 
-      words.clear(); 
+	  cerr << "Only LMs with orders 2, 3, and 4 allowed" << endl; 
+      } 
+      //shouldn't we do something when words.size() < order_? 
+      feats->set_value(FD::Convert("PLRE"), log(prob_ngram)); //set the feature value
+      words.clear(); //clear the vector for the next n-gram
       ft = &ft->levels[curword];
       --ci;
       if (ci < 0) break;
@@ -324,7 +326,7 @@ class PLRENgramDetectorImpl {
               num_scored = max(0, order_ - 2);
             }
           } else {
-            FireFeatures(state, cur_word, &p);
+            FireFeatures(state, cur_word, &p); //updates p here
             const State<5> scopy = State<5>(state, order_, cur_word);
             state = scopy;
             if (saw_eos) { p.set_value(FD::Convert("Malformed"), 1.0); }
@@ -336,7 +338,7 @@ class PLRENgramDetectorImpl {
             if (num_scored >= order_) context_complete = true;
           }
           if (context_complete) {
-            (*feats) += p;
+            (*feats) += p; 
           } else {
             if (remnant)
               SetIthUnscoredWord(num_estimated, cur_word, remnant);
